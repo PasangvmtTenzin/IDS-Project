@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+<h2>Your Shopping Cart</h2>
+{% if cart_items %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td><a href="{{ url_for('product_detail', product_id=item.id) }}">{{ item.name | safe }}</a></td>
+                <td>
+                    {% if item.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/products/' + item.image_filename) }}" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/50x60/CCCCCC/FFFFFF?Text=NoImg" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                    {% endif %}
+                </td>
+                <td>${{ "%.2f"|format(item.price) }}</td>
+                <td>
+                    <form action="{{ url_for('update_cart_item', product_id=item.id) }}" method="post" style="display:inline;">
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="0" style="width: 60px;">
+                        <button type="submit" class="small-button">Update</button>
+                    </form>
+                </td>
+                <td>${{ "%.2f"|format(item.item_total) }}</td>
+                <td><a href="{{ url_for('remove_from_cart', product_id=item.id) }}" class="button-danger small-button">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total: ${{ "%.2f"|format(total_cart_price) }}</h3>
+    <a href="{{ url_for('checkout') }}" class="button-primary">Proceed to Checkout</a>
+{% else %}
+    <p>Your cart is empty. <a href="{{ url_for('list_products') }}">Continue shopping!</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h2>Checkout</h2>
+<p style="color:red;">WARNING: Addresses are stored as submitted and could be XSS targets if displayed raw elsewhere.</p>
+<form method="POST" action="{{ url_for('checkout') }}" class="styled-form">
+    <h3>Shipping Address</h3>
+    <div>
+        <label for="shipping_address">Full Address (Street, City, State, Zip):</label>
+        <textarea name="shipping_address" id="shipping_address" rows="4" required></textarea>
+    </div>
+
+    <h3>Billing Address (if different)</h3>
+    <div>
+        <input type="checkbox" id="same_as_shipping" name="same_as_shipping" checked onchange="toggleBillingAddress()">
+        <label for="same_as_shipping">Billing address is the same as shipping</label>
+    </div>
+    <div id="billing_address_fields" style="display:none;">
+        <label for="billing_address">Full Address (Street, City, State, Zip):</label>
+        <textarea name="billing_address" id="billing_address" rows="4"></textarea>
+    </div>
+
+    <h3>Simulated Payment</h3>
+    <p>This is a demo. No real payment will be processed.</p>
+    <div>
+        <label for="card_number">Card Number (dummy):</label>
+        <input type="text" name="card_number" id="card_number" value="4242424242424242">
+    </div>
+    <div>
+        <label for="expiry_date">Expiry Date (MM/YY dummy):</label>
+        <input type="text" name="expiry_date" id="expiry_date" value="12/25">
+    </div>
+    <div>
+        <label for="cvv">CVV (dummy):</label>
+        <input type="text" name="cvv" id="cvv" value="123">
+    </div>
+
+    <h4>Order Total: ${{ "%.2f"|format(total_cart_price) }}</h4>
+    <button type="submit">Place Order (Simulated)</button>
+</form>
+
+<script>
+    function toggleBillingAddress() {
+        var checkbox = document.getElementById('same_as_shipping');
+        var billingFields = document.getElementById('billing_address_fields');
+        if (checkbox.checked) {
+            billingFields.style.display = 'none';
+            document.getElementById('billing_address').required = false;
+        } else {
+            billingFields.style.display = 'block';
+            document.getElementById('billing_address').required = true;
+        }
+    }
+    // Initialize
+    toggleBillingAddress();
+</script>
+{% endblock %}

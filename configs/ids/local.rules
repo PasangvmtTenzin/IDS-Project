@@ -1,0 +1,19 @@
+# Custom Suricata Rules
+
+# Rule to detect ICMP Ping (Port Scan often starts with this)
+alert icmp any any -> $HOME_NET any (msg:"ICMP Ping Detected"; sid:1000001; rev:1; classtype:misc-activity;)
+
+# Rule to detect Nmap TCP Connect Scan (SYN scan is more common but harder to make generic rule for)
+# This rule looks for the Nmap user-agent in HTTP if Nmap does -sV (version scan) on port 80
+# For a simple -sT (TCP connect scan), specific Nmap signatures are harder without deeper packet inspection.
+# A more general rule for multiple connection attempts from the same source to different ports would be better for nmap detection.
+alert tcp any any -> $HOME_NET any (msg:"Potential Nmap Scan Activity (multiple ports from same source)"; flow:to_server; detection_filter:track by_src, count 10, seconds 60; sid:1000002; rev:1; classtype:attempted-recon;)
+
+# Rule to detect a common SQL Injection pattern in HTTP GET requests
+alert http any any -> $HOME_NET any (msg:"SQL Injection Attempt (UNION SELECT)"; flow:to_server,established; http.uri; content:"UNION"; nocase; content:"SELECT"; nocase; distance:0; pcre:"/UNION\s+SELECT/Ui"; sid:1000003; rev:1; classtype:web-application-attack;)
+
+# Rule to detect basic directory traversal attempt
+alert http any any -> $HOME_NET any (msg:"Directory Traversal Attempt (../)"; flow:to_server,established; http.uri; content:"../"; nocase; sid:1000004; rev:1; classtype:web-application-attack;)
+
+# Test rule - alert on any HTTP traffic to webserver port 80
+alert http any any -> $HOME_NET 80 (msg:"HTTP Traffic to Webserver"; sid:1000005; rev:1; classtype:misc-activity;)

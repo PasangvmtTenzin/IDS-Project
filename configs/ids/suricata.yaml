@@ -1,0 +1,81 @@
+%YAML 1.1
+---
+
+# This is a minimal example. Start with a full default suricata.yaml
+# and make these modifications or additions.
+
+# Set the network variables. Adapt the IP address if you defined a custom subnet.
+# For a Docker bridge network, 'any' often works well for HOME_NET,
+# or you can find the container's network range.
+# If ids_net is 172.20.0.0/24, then:
+# HOME_NET: "[172.20.0.0/24]"
+HOME_NET: "any" # Simplest for this demo
+EXTERNAL_NET: "!$HOME_NET"
+
+# Path to the Suricata rules.
+default-rule-path: /etc/suricata/rules
+rule-files:
+  - local.rules # Our custom rules
+  # - emerging-all.rules # If using emerging threats rules
+
+# Configure the af-packet interface for sniffing
+# Make sure this matches the interface Suricata will listen on (eth0 in the container)
+af-packet:
+  - interface: eth0
+    # threads: 1 # Auto is usually fine
+    # cluster-id: 99
+    # cluster-type: cluster_qm
+    # defrag: yes
+
+# Logging outputs
+outputs:
+  # Unified event logging in JSON format
+  - eve-log:
+      enabled: yes
+      type: file
+      filename: eve.json
+      # Other options like http, dns, tls logging can be enabled here
+      types:
+        - alert:
+        - http:
+            extended: yes     # enable this for extended logging information
+        - dns:
+        - tls:
+            extended: yes     # enable this for extended logging information
+        - flow:
+        - anomaly:
+            enabled: yes
+            # packts: yes # for full packet capture on anomaly, can be disk intensive
+
+  # A line based alert log
+  - alert-fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+
+# Other settings (threading, etc.) can be left as default or tuned.
+# Make sure the run-as user is correct if you're not running as root inside container
+# run-as:
+#   user: suricata
+#   group: suricata
+
+# Make sure flow settings are reasonable
+flow:
+  memcap: 32mb
+  hash-size: 65536
+  prealloc: 10000
+  emergency-recovery: 30
+
+# PID file
+pid-file: /var/run/suricata.pid
+
+# Stats logging
+stats:
+  enabled: yes
+  interval: 8
+
+# Default checksum validation for packets.
+# If you see checksum errors in logs, you might need to set this to 'no'
+# particularly if traffic passes through certain types of NAT or virtual switches.
+# For Docker bridge, 'yes' should be fine.
+checksum-validation: yes

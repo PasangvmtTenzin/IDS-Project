@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id if order else 'Unknown' }}{% endblock %}
+
+{% block content %}
+{% if order %}
+    <h2>Order Details - #{{ order.id }}</h2>
+    <p><strong>Date Placed:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') if order.created_at else 'N/A' }}</p>
+    <p><strong>Status:</strong> {{ order.status | safe }}</p>
+    <p><strong>Total Amount:</strong> ${{ "%.2f"|format(order.total_amount) }}</p>
+    
+    <h3>Shipping Address:</h3>
+    <pre>{{ order.shipping_address | safe }}</pre>
+
+    <h3>Billing Address:</h3>
+    <pre>{{ order.billing_address | safe }}</pre>
+
+    <h3>Items in this Order:</h3>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Price at Purchase</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.name | safe }}</td>
+                    <td>
+                        {% if item.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/products/' + item.image_filename) }}" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/50x60/CCCCCC/FFFFFF?Text=NoImg" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.price_at_purchase) }}</td>
+                    <td>${{ "%.2f"|format(item.quantity * item.price_at_purchase) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No items found for this order (this should not happen).</p>
+    {% endif %}
+{% else %}
+    <h2>Order Not Found</h2>
+    <p>The requested order could not be found or you do not have permission to view it.</p>
+{% endif %}
+<p><a href="{{ url_for('order_history') }}">« Back to Order History</a></p>
+{% endblock %}

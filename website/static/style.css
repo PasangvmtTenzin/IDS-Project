@@ -1,0 +1,273 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+    line-height: 1.6;
+}
+
+header {
+    background: #343a40;
+    color: #ffffff;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 2em;
+    margin:0;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 2rem; /* Increased padding */
+    background-color: #495057; /* Slightly lighter than header */
+}
+
+nav a {
+    color: #f8f9fa;
+    margin: 0 12px; /* Increased margin */
+    text-decoration: none;
+    font-size: 1.05em; /* Slightly larger font */
+    padding: 5px 0;
+}
+nav a:hover {
+    color: #adb5bd;
+    text-decoration: underline;
+}
+
+nav .user-info {
+    display: flex;
+    align-items: center;
+}
+nav .user-info span {
+    margin-right: 10px;
+    color: #e9ecef;
+}
+
+
+.admin-nav {
+    background-color: #6c757d; /* Distinct admin nav color */
+    padding: 0.5rem 0;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.admin-nav a {
+    color: #ffc107; /* Bright color for admin links */
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.admin-nav a:hover {
+    color: #ffd54f;
+}
+
+
+main {
+    padding: 20px;
+    max-width: 1140px; /* Wider content area */
+    margin: 20px auto;
+    background: #ffffff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.07);
+    border-radius: 8px;
+}
+
+h2, h3 {
+    color: #007bff; /* Primary blue for headings */
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+h2 { font-size: 1.8em; }
+h3 { font-size: 1.5em; }
+
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background: #343a40;
+    color: #f8f9fa;
+    font-size: 0.9em;
+}
+
+/* Forms */
+.styled-form, .auth-form, .search-form, .cart-table form {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+.styled-form div, .auth-form div {
+    margin-bottom: 15px;
+}
+.styled-form label, .auth-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+.styled-form input[type="text"],
+.styled-form input[type="email"],
+.styled_form input[type="password"], /* Ensure consistency in selector if this class is used */
+.styled-form input[type="number"],
+.styled-form textarea,
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1em;
+}
+.styled-form textarea {
+    min-height: 100px;
+}
+
+button, .button-primary, .button-danger, .small-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+button:hover, .button-primary:hover {
+    background-color: #0056b3;
+}
+.button-danger { background-color: #dc3545; }
+.button-danger:hover { background-color: #c82333; }
+.small-button { padding: 5px 10px; font-size: 0.9em;}
+
+/* Product Grid */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Increased gap */
+    justify-content: center; /* Center items if they don't fill the row */
+}
+.product-card {
+    border: 1px solid #dee2e6;
+    padding: 18px; /* Increased padding */
+    width: 250px; /* Slightly wider cards */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.product-card img {
+    max-width: 100%;
+    height: 200px; /* Fixed height for images */
+    object-fit: cover; /* Ensures image covers the area well */
+    margin-bottom: 12px;
+    border-radius: 4px;
+}
+.product-card h3 {
+    margin-top: 0;
+    font-size: 1.2em; /* Slightly larger product name */
+    color: #343a40;
+}
+.product-card h3 a { text-decoration: none; color: inherit; }
+.product-card .category { font-size: 0.9em; color: #6c757d; margin-bottom: 8px; }
+.product-card .price {
+    font-weight: bold;
+    color: #28a745; /* Green price */
+    font-size: 1.25em; /* Larger price */
+    margin-top: auto;
+    padding-top: 10px;
+}
+.product-card p { margin-bottom: 0.5em; }
+
+/* Product Detail */
+.product-detail-container { display: flex; gap: 25px; flex-wrap: wrap; }
+.product-detail-container .product-image img { max-width: 350px; border: 1px solid #dee2e6; border-radius: 4px; }
+.product-detail-container .product-info { flex-grow: 1; min-width: 300px; }
+.product-detail-container .product-info .price { font-size: 1.8em; }
+
+/* Cart & Tables */
+.cart-table, table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+}
+.cart-table th, .cart-table td, table th, table td {
+    border: 1px solid #dee2e6;
+    padding: 12px; /* Increased padding */
+    text-align: left;
+    vertical-align: middle;
+}
+.cart-table th, table th {
+    background-color: #e9ecef; /* Lighter header for tables */
+    font-weight: 600;
+}
+.cart-table img { width: 60px; height: auto; border-radius: 3px; }
+.cart-table input[type="number"] { width: 70px; padding: 8px; text-align: center; }
+
+/* Flash Messages */
+.flash-messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
+.flash-messages li {
+    padding: 12px 18px; /* Increased padding */
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 1em; /* Standardized font size */
+    border: 1px solid transparent;
+}
+.flash-messages .success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+.flash-messages .danger  { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+.flash-messages .warning { background-color: #fff3cd; color: #856404; border-color: #ffeeba; }
+.flash-messages .info    { background-color: #d1ecf1; color: #0c5460; border-color: #bee5eb; }
+
+/* Pagination */
+.pagination { text-align: center; margin: 30px 0; }
+.pagination a, .pagination span {
+    margin: 0 4px;
+    padding: 8px 15px; /* Increased padding */
+    border: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #007bff;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.pagination a:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+.pagination .current {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    cursor: default;
+}
+.pagination .disabled {
+    color: #6c757d;
+    pointer-events: none;
+    border-color: #dee2e6;
+}
+
+/* Admin specific form styling (if needed, or reuse .styled-form) */
+.admin-form {} /* Placeholder if specific admin styles are needed */
+
+.actions a, .actions button, .actions form {
+    display: inline-block; /* Align items in a row */
+    margin-right: 8px;
+    margin-bottom: 5px; /* For wrapping */
+}

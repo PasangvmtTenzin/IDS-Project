@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, {{ session.admin_username | safe }}!</p> <!-- INSECURE -->
+<p>This is the central control panel for the store. All actions here are performed with high privileges and minimal security checks.</p>
+<ul>
+    <li><a href="{{ url_for('admin_list_products') }}">Manage Products</a></li>
+    <li><a href="{{ url_for('admin_list_users') }}">View Users</a> (User management features like edit/delete not implemented)</li>
+    <li><a href="{{ url_for('admin_list_orders') }}">View Orders</a> (Order status updates not implemented)</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h2>User Registration</h2>
+<p style="color:red;">WARNING: Registration stores passwords in PLAIN TEXT. Username and email fields might be vulnerable to SQLi if not handled carefully by backend (which this backend doesn't).</p>
+<form method="POST" action="{{ url_for('register') }}" class="auth-form">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="text" name="password" id="password" required> <!-- type="text" to show plain password -->
+    </div>
+    <button type="submit">Register</button>
+</form>
+<p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+{% endblock %}

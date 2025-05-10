@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}My Order History{% endblock %}
+
+{% block content %}
+<h2>My Order History</h2>
+{% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') if order.created_at else 'N/A' }}</td>
+                <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                <td>{{ order.status | safe }}</td> <!-- INSECURE -->
+                <td><a href="{{ url_for('user_order_detail', order_id=order.id) }}">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You have no past orders.</p>
+{% endif %}
+{% endblock %}

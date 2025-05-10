@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Admin: Order #{{ order.id if order else 'Unknown' }}{% endblock %}
+
+{% block content %}
+{% if order %}
+    <h2>Admin: Order Details - #{{ order.id }}</h2>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+        <div>
+            <p><strong>User:</strong> {{ order.username | safe }} (ID: {{ order.user_id }})</p>
+            <p><strong>Date Placed:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') if order.created_at else 'N/A' }}</p>
+            <p><strong>Current Status:</strong> <strong style="color:blue;">{{ order.status | safe }}</strong></p>
+            <p><strong>Total Amount:</strong> ${{ "%.2f"|format(order.total_amount) }}</p>
+        </div>
+        <div style="border: 1px solid #ccc; padding: 15px; background-color: #f9f9f9; border-radius: 4px;">
+            <h4>Update Order Status (INSECURE)</h4>
+            <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="post">
+                <div style="margin-bottom:10px;">
+                    <label for="new_status" style="display:block; margin-bottom:5px;">New Status:</label>
+                    <input type="text" name="new_status" id="new_status" value="{{ order.status }}" required style="width:200px; padding:8px;">
+                </div>
+                <p><small>Examples: Pending, Processing, Shipped, Delivered, Cancelled. <br>This input is directly used in SQL and is vulnerable.</small></p>
+                <button type="submit">Update Status</button>
+            </form>
+        </div>
+    </div>
+    
+    <hr>
+
+    <h3>Shipping Address:</h3>
+    <pre>{{ order.shipping_address | safe }}</pre>
+
+    <h3>Billing Address:</h3>
+    <pre>{{ order.billing_address | safe }}</pre>
+
+    <h3>Items in this Order:</h3>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Price at Purchase</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.name | safe }}</td>
+                    <td>
+                        {% if item.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/products/' + item.image_filename) }}" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/50x60/CCCCCC/FFFFFF?Text=NoImg" alt="{{ item.name | safe }}" style="width:50px; height:auto;">
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.price_at_purchase) }}</td>
+                    <td>${{ "%.2f"|format(item.quantity * item.price_at_purchase) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No items found for this order.</p>
+    {% endif %}
+{% else %}
+    <h2>Order Not Found</h2>
+{% endif %}
+<p style="margin-top: 20px;"><a href="{{ url_for('admin_list_orders') }}">« Back to Admin Orders</a></p>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Admin: {{ action }} Product{% endblock %}
+
+{% block content %}
+<h2>Admin: {{ action }} Product</h2>
+<p style="color:red;">WARNING: All form fields are directly used in SQL queries without sanitization or validation. File uploads are also insecure (any file type/size accepted).</p>
+<form method="post" class="styled-form" enctype="multipart/form-data">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="{{ product.name if product else '' }}" required>
+    </div>
+    <div>
+        <label for="description">Description (Allows HTML/JS for XSS demo):</label>
+        <textarea name="description" id="description" rows="5">{{ product.description if product else '' }}</textarea>
+    </div>
+    <div>
+        <label for="price">Price:</label>
+        <input type="text" name="price" id="price" value="{{ product.price if product else '' }}" required>
+    </div>
+    <div>
+        <label for="category">Category:</label>
+        <input type="text" name="category" id="category" value="{{ product.category if product else '' }}">
+    </div>
+    
+    <div>
+        <label for="product_image">Product Image (Upload new):</label>
+        <input type="file" name="product_image" id="product_image">
+        {% if product and product.image_filename %}
+            <p style="margin-top:10px;">Current image: <code>{{ product.image_filename }}</code> <br> 
+            <img src="{{ url_for('static', filename='uploads/products/' + product.image_filename) }}" alt="Current image: {{ product.name | safe }}" style="max-width: 150px; margin-top: 5px; border: 1px solid #ccc;">
+            <br><small>(Uploading a new image will replace this if successful)</small></p>
+        {% elif action == "Edit" %}
+            <p style="margin-top:10px;"><small>No current image. Upload one if desired.</small></p>
+        {% endif %}
+    </div>
+    
+     <div>
+        <label for="stock">Stock:</label>
+        <input type="text" name="stock" id="stock" value="{{ product.stock if product else '0' }}" required>
+    </div>
+    <button type="submit">{{ action }} Product</button>
+    <a href="{{ url_for('admin_list_products') }}" style="margin-left:10px;">Cancel</a>
+</form>
+{% endblock %}

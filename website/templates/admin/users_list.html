@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Admin: Manage Users{% endblock %}
+
+{% block content %}
+<h2>Admin: Manage Users</h2>
+<p style="color:red;">WARNING: User data, including plain text passwords (if selected in app.py), might be displayed. Email/Usernames may contain XSS.</p>
+{% if users %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <!-- Add password column if app.py selects it -->
+                <!-- <th>Password (PLAIN TEXT!)</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username | safe }}</td> <!-- INSECURE -->
+                <td>{{ user.email | safe }}</td> <!-- INSECURE -->
+                <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</td>
+                <!-- <td>{{ user.password }}</td> --> <!-- Uncomment if password is included from app.py query -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No users found.</p>
+{% endif %}
+{% endblock %}

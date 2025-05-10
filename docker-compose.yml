@@ -1,0 +1,96 @@
+services:
+  webserver: # Nginx reverse proxy
+    build:
+      context: .
+      dockerfile: Dockerfiles/webserver.Dockerfile
+    container_name: ids-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./configs/webserver/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - ids_net
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app: # Our Flask application server
+    build:
+      context: .
+      dockerfile: Dockerfiles/app.Dockerfile
+    container_name: ids-flask-app
+    volumes:
+      - ./website:/app # Mount Flask app code
+    networks:
+      - ids_net
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://store_user:strongpassword@db:5432/cloth_store_db
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1 # Enables debugger (INSECURE)
+      - FLASK_SECRET_KEY=this_is_a_very_insecure_secret_key_for_ids_demo # Hardcoded
+    restart: unless-stopped
+
+  db: # PostgreSQL database server
+    image: postgres:15-alpine
+    container_name: ids-postgres-db
+    environment:
+      - POSTGRES_DB=cloth_store_db
+      - POSTGRES_USER=store_user
+      - POSTGRES_PASSWORD=strongpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./configs/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ids_net
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U store_user -d cloth_store_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  ids:
+    build:
+      context: .
+      dockerfile: Dockerfiles/ids.Dockerfile
+    container_name: ids-suricata
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - ./logs:/var/log/suricata
+      - ./configs/ids:/etc/suricata
+    networks:
+      ids_net:
+    command: suricata -c /etc/suricata/suricata.yaml -i eth0 --user=suricata --group=suricata
+    depends_on:
+      - webserver
+    restart: unless-stopped
+
+  attacker:
+    build:
+      context: .
+      dockerfile: Dockerfiles/attacker.Dockerfile
+    container_name: ids-attacker
+    volumes:
+      - ./attacks:/attacks
+    networks:
+      - ids_net
+    tty: true
+    stdin_open: true
+    depends_on:
+      - webserver
+
+networks:
+  ids_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
