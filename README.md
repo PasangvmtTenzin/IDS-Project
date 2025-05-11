@@ -34,6 +34,8 @@ IDS-Project/
 │   └── .gitkeep                # Ensures the 'logs' directory is tracked by Git
 └── README.md                   # This file: project overview, setup, and usage instructions
 
+```
+
 ## Prerequisites
 
 *   Docker: [Install Docker](https://docs.docker.com/get-docker/)
@@ -63,7 +65,7 @@ IDS-Project/
     ```
     You should see `ids-webserver`, `ids-suricata`, and `ids-attacker` running.
 
-## Testing the Setup
+# Testing the Setup
 
 1.  **Access the Webserver:**
     Open your browser and go to `http://localhost:8080`. You should see the "Welcome to the Simple Web Server!" page.
