@@ -4,29 +4,35 @@ This project demonstrates a simple Intrusion Detection System (IDS) setup using 
 
 ## Project Structure
 
-/IDS-Project
-├── docker-compose.yml
-├── Dockerfiles/
-│ ├── webserver.Dockerfile
-│ ├── ids.Dockerfile
-│ └── attacker.Dockerfile
-├── configs/
-│ ├── ids/
-│ │ ├── suricata.yaml
-│ │ └── local.rules # Custom Suricata rules
-│ ├── webserver/
-│ │ └── default.conf
-│ └── database/
-│ └── init.sql # Placeholder for DB schema
-├── website/
-│ └── index.html # Simple webpage
-├── attacks/
-│ ├── port_scan.sh
-│ └── sql_injection.sh
-├── scripts/
-│ └── setup_network.sh # Informational script
-├── logs/ # Suricata logs will appear here
-└── README.md
+## Project Structure
+
+The project is organized as follows:
+
+```plaintext
+IDS-Project/
+├── docker-compose.yml          # Defines and configures all services (webserver, ids, attacker)
+├── Dockerfiles/                # Contains Dockerfile definitions for each service
+│   ├── webserver.Dockerfile    # Builds the Nginx webserver image
+│   ├── ids.Dockerfile          # Builds the Suricata IDS image
+│   └── attacker.Dockerfile     # Builds the attacker simulation image
+├── configs/                    # Configuration files for services
+│   ├── ids/                    # Suricata specific configurations
+│   │   ├── suricata.yaml       # Main Suricata engine configuration
+│   │   └── local.rules         # Custom rules for Suricata to detect specific threats
+│   ├── webserver/              # Nginx specific configurations
+│   │   └── default.conf        # Nginx virtual host configuration for the webserver
+│   └── database/               # Placeholder for database related files (not actively used)
+│       └── init.sql            # Example SQL schema (not used by core functionality)
+├── website/                    # Static content for the webserver
+│   └── index.html              # Simple HTML page served by Nginx
+├── attacks/                    # Scripts to simulate network attacks
+│   ├── port_scan.sh          # Simulates a port scan using nmap and ping
+│   └── sql_injection.sh      # Simulates basic SQL injection attempts via curl
+├── scripts/                    # Utility and helper scripts
+│   └── setup_network.sh      # Informational script describing the Docker network setup
+├── logs/                       # Mount point for Suricata logs (generated during runtime)
+│   └── .gitkeep                # Ensures the 'logs' directory is tracked by Git
+└── README.md                   # This file: project overview, setup, and usage instructions
 
 ## Prerequisites
 
