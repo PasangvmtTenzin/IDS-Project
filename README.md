@@ -125,11 +125,3 @@ Remember to:
 2.  Place the files in their respective locations.
 3.  Make the `.sh` scripts executable (`chmod +x *.sh` in the relevant directories).
 4.  Run `docker-compose up -d --build`.
-
-## Reference;
-
-https://owasp.org/www-community/attacks/SQL_Injection 
-https://docs.docker.com/compose/how-tos/networking/
-https://suricata.io/documentation/
-    https://docs.suricata.io/en/latest/what-is-suricata.html
-https://www.kali.org/tools/
