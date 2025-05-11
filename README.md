@@ -4,8 +4,6 @@ This project demonstrates a simple Intrusion Detection System (IDS) setup using 
 
 ## Project Structure
 
-## Project Structure
-
 The project is organized as follows:
 
 ```plaintext
