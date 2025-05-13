@@ -70,6 +70,10 @@ IDS-Project/
     This traffic should be logged by Suricata (e.g., the "HTTP Traffic to Webserver" rule).
 
 2.  **Run a Port Scan from the Attacker:**
+    Get into Attacker shell:
+    ```
+    docker exec -it ìds-attacker /bin/bash
+    ``
     Execute the port scan script inside the attacker container:
     ```bash
     docker-compose exec attacker bash /attacks/port_scan.sh
