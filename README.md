@@ -73,7 +73,7 @@ IDS-Project/
     Get into Attacker shell:
     ```
     docker exec -it ìds-attacker /bin/bash
-    ``
+    ```
     Execute the port scan script inside the attacker container:
     ```bash
     docker-compose exec attacker bash /attacks/port_scan.sh
