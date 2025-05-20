@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env
+*.env
+
+# Flask specific
+instance/
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# VSCode settings
+.vscode/
+
+# Pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# System files
+.DS_Store
+Thumbs.db
