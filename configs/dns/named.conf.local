@@ -1,0 +1,18 @@
+//
+// Do any local configuration here
+//
+
+zone "ids.local" IN { // <--- CHANGED
+    type master;
+    file "/etc/bind/zones/ids.local.db"; // <--- CHANGED (filename)
+    allow-update { none; };
+    // notify no;
+};
+
+// Reverse lookup zone for the 172.20.0.0/16 subnet
+zone "20.172.in-addr.arpa" IN {
+    type master;
+    file "/etc/bind/zones/db.172.20";
+    allow-update { none; };
+    // notify no;
+};

@@ -1,0 +1,18 @@
+$TTL 86400      ; 1 day
+@       IN      SOA     ns1.ids.local. admin.ids.local. ( ; <--- CHANGED
+                        2024031502      ; Serial (Incremented or keep in sync)
+                        3600            ; Refresh
+                        1800            ; Retry
+                        604800          ; Expire
+                        86400 )         ; Negative Cache TTL
+
+; Name Server
+@       IN      NS      ns1.ids.local. ; <--- CHANGED
+
+; PTR Records
+2.0     IN      PTR     ns1.ids.local.      ; <--- CHANGED
+3.0     IN      PTR     db.ids.local.       ; <--- CHANGED
+4.0     IN      PTR     app.ids.local.      ; <--- CHANGED
+5.0     IN      PTR     nginx.ids.local.    ; <--- CHANGED
+6.0     IN      PTR     suricata.ids.local. ; <--- CHANGED
+7.0     IN      PTR     attacker.ids.local. ; <--- CHANGED

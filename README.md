@@ -8,30 +8,44 @@ The project is organized as follows:
 
 ```plaintext
 IDS-Project/
-├── docker-compose.yml          # Defines and configures all services (webserver, ids, attacker)
+├── docker-compose.yml          # Defines and configures all services
 ├── Dockerfiles/                # Contains Dockerfile definitions for each service
-│   ├── webserver.Dockerfile    # Builds the Nginx webserver image
+│   ├── app.Dockerfile          # Builds the Flask application image
+│   ├── attacker.Dockerfile     # Builds the attacker simulation image
 │   ├── ids.Dockerfile          # Builds the Suricata IDS image
-│   └── attacker.Dockerfile     # Builds the attacker simulation image
+│   └── webserver.Dockerfile    # Builds the Nginx webserver image
 ├── configs/                    # Configuration files for services
+│   ├── database/
+│   │   └── init.sql            # Schema for the PostgreSQL database
+│   ├── dns/                    # BIND9 DNS server configurations
+│   │   ├── Dockerfile          # Builds the BIND9 DNS server image
+│   │   ├── named.conf
+│   │   ├── named.conf.local
+│   │   ├── named.conf.options
+│   │   └── zones/
+│   │       ├── csn.local.db    # Forward lookup zone for 'csn.local'
+│   │       └── db.172.20       # Reverse lookup zone for 172.20.x.x
 │   ├── ids/                    # Suricata specific configurations
 │   │   ├── suricata.yaml       # Main Suricata engine configuration
-│   │   └── local.rules         # Custom rules for Suricata to detect specific threats
-│   ├── webserver/              # Nginx specific configurations
-│   │   └── default.conf        # Nginx virtual host configuration for the webserver
-│   └── database/               # Placeholder for database related files (not actively used)
-│       └── init.sql            # Example SQL schema (not used by core functionality)
-├── website/                    # Static content for the webserver
-│   └── index.html              # Simple HTML page served by Nginx
+│   │   └── local.rules         # Custom rules for Suricata (if any)
+│   └── webserver/              # Nginx specific configurations
+│       └── default.conf        # Nginx virtual host configuration
+├── website/                    # Flask application code and static content
+│   ├── app.py                  # Main Flask application file
+│   ├── requirements.txt        # Python dependencies
+│   ├── static/                 # Static assets (CSS, JS, images)
+│   └── templates/              # HTML templates for Flask
 ├── attacks/                    # Scripts to simulate network attacks
-│   ├── port_scan.sh          # Simulates a port scan using nmap and ping
-│   └── sql_injection.sh      # Simulates basic SQL injection attempts via curl
-├── scripts/                    # Utility and helper scripts
-│   └── setup_network.sh      # Informational script describing the Docker network setup
-├── logs/                       # Mount point for Suricata logs (generated during runtime)
-│   └── .gitkeep                # Ensures the 'logs' directory is tracked by Git
+│   ├── port_scan.sh            # Simulates a port scan
+│   └── sql_injection.sh        # Simulates basic SQL injection attempts
+├── scripts/                    # Utility and helper scripts (if any)
+│   └── setup_network.sh        # (Potentially outdated, review if needed)
+├── logs/                       # Mount point for service logs
+│   ├── bind/                   # BIND9 DNS server logs
+│   │   └── .gitkeep
+│   └── suricata/               # Suricata IDS logs (eve.json, etc.)
+│       └── .gitkeep
 └── README.md                   # This file: project overview, setup, and usage instructions
-
 ```
 
 ## Prerequisites
@@ -42,6 +56,7 @@ IDS-Project/
 ## Setup and Running
 
 1.  **Clone the repository (if applicable) or create the files as listed.**
+    Ensure all directories and files match the structure above. Pay special attention to the ./configs/dns/ directory and its contents.
 
 2.  **Make attack scripts executable:**
     ```bash
@@ -135,3 +150,26 @@ Remember to:
 2.  Place the files in their respective locations.
 3.  Make the `.sh` scripts executable (`chmod +x *.sh` in the relevant directories).
 4.  Run `docker-compose up -d --build`.
+
+
+## Troubleshooting
+    If you see #!/bin/bash^M$: The ^M is the carriage return. This is the problem.
+    
+    1. Using a Text Editor (Recommended - e.g., VS Code, Notepad++, Sublime Text):
+        Open C:\Users\HP\IDS-Project\attacks\port_scan.sh in your text editor.
+        Look at the status bar at the bottom. It usually indicates the line ending type (it will likely say "CRLF").
+        Click on "CRLF" (or find the relevant menu option like "Edit" -> "EOL Conversion" or "View" -> "Line Endings").
+        Select "LF" (Unix/Linux style).
+        Save the file.
+        Do the same for sql_injection.sh.
+
+    2. Using dos2unix (if you have Git Bash or WSL on Windows):
+        Open Git Bash or a WSL terminal.
+        Navigate to your project directory: cd /c/Users/HP/IDS-Project/attacks (path might vary slightly for WSL).
+        Run:
+        ```bash
+        dos2unix port_scan.sh
+        dos2unix sql_injection.sh
+        Use code with caution.
+        ```
+        This command will convert the files in place.

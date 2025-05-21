@@ -1,0 +1,37 @@
+options {
+    directory "/var/cache/bind";
+
+    // Forwarders: For resolving external domains
+    forwarders {
+        8.8.8.8;  // Google Public DNS
+        1.1.1.1;  // Cloudflare DNS
+    };
+    // forward only; // Use this if you ONLY want to use forwarders and not attempt root server lookups
+
+    dnssec-validation auto; // Recommended for security
+
+    listen-on-v6 { any; };
+    listen-on { any; };    // Listen on all available interfaces in the container
+
+    allow-query { any; };  // Allow queries from any client (within your Docker network)
+    recursion yes;         // Allow recursive queries (needed for clients and forwarding)
+    // For more security in a production environment, you might restrict recursion:
+    // allow-recursion { localnets; 127.0.0.1; <your_docker_subnet_cidr>; };
+
+    // Logging
+    // query-log yes; // Simple query logging to syslog, can be verbose
+};
+
+logging {
+    channel custom_log {
+        file "/var/log/bind/bind.log" versions 3 size 5m; // Log to a file
+        severity info; // Adjust severity as needed (e.g., debug, notice, warning)
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+    };
+    category default { custom_log; };
+    category queries { custom_log; }; // Log DNS queries
+    category unmatched { custom_log; };
+    // Add other categories as needed
+};
