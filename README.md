@@ -173,3 +173,29 @@ Remember to:
         Use code with caution.
         ```
         This command will convert the files in place.
+
+## ids.local.db
+```plaintext
+    $TTL 86400      ; Default TTL for records (1 day)
+    @       IN      SOA     ns1.ids.local. admin.ids.local. ( ; 
+    2024031502      ; Serial (Incremented!)
+                            3600            ; Refresh
+                            1800            ; Retry
+                            604800          ; Expire
+                            86400 )         ; Negative Cache TTL
+
+    ; Name Server
+    @       IN      NS      ns1.ids.local. ; 
+
+    ; Name Server IP Address
+    ns1.ids.local.    IN      A       172.20.0.2  ; 
+
+    ; A Records for your services
+    dns.ids.local.          IN      A       172.20.0.2  ; 
+    db.ids.local.           IN      A       172.20.0.3  ; 
+    app.ids.local.          IN      A       172.20.0.4  ; 
+    nginx.ids.local.        IN      A       172.20.0.5  ; 
+    www.ids.local.          IN      CNAME   nginx.ids.local. ; 
+    suricata.ids.local.     IN      A       172.20.0.6  ; 
+    attacker.ids.local.     IN      A       172.20.0.7  ; 
+```
