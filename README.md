@@ -140,7 +140,7 @@ IDS-Project/
 To stop and remove the containers, networks, and volumes (if defined as anonymous):
 ```bash
 docker-compose down
-
+```
 
 ---
 
